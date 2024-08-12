@@ -6,6 +6,7 @@ import { InputBox } from "../components/InputBox";
 import { SubHeading } from "../components/SubHeading";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import backendurl from "../Host";
 
 export const Register = () => {
   const [username, setusername] = useState("");
@@ -28,7 +29,7 @@ export const Register = () => {
               e.preventDefault();
               try {
                 const response = await axios.post(
-                  "https://nexorand.onrender.com/api/users/register",
+                  `${backendurl}/api/users/register`,
                   {
                     username,
                     email,
