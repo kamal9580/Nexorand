@@ -33,16 +33,16 @@ export const Register = () => {
         }} placeholder="1234" label={"Password"} />
 
 <form onSubmit={async () => {
-            navigate("/")
-            // const response = await axios.post("/", {
-            //   username,
-            //    email,
-            //    password,
-            //    instagramid
             
-            // });
-            // localStorage.setItem("token", response.data.token)
-            // navigate("/my-space")
+            const response = await axios.post("https://nexorand.onrender.com/api/users/register", {
+              username,
+               email,
+               password,
+               instagramid
+            
+            });
+            localStorage.setItem("token", response.data.token)
+            navigate("/my-space")
           }}>
   
 

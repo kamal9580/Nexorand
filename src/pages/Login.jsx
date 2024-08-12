@@ -20,24 +20,26 @@ const Login = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
         <form onSubmit={async () => {
-            navigate("/my-space")
-            // try {
-            //   const response = await axios.post("/", {
+          
+            try {
+              const response = await axios.post("https://nexorand.onrender.com/api/users/login", {
               
-            //     email,
-            //     password,
+                email,
+                password,
                
              
-            //  });
-            //  if(response.data.msg =='Wrong pass'){
-            //     return ;
-            //  }
+             });
+             if(response.data.msg =='false'){
+                return false ;
+             }
             
-            //  localStorage.setItem("token", response.data.token)
-            //  navigate("/my-space")
-            // } catch (error) {
+             localStorage.setItem("token", response.data.token)
+             navigate("/my-space")
+            } catch (error) {
+
+
               
-            // }
+            }
            
           }}
           >
