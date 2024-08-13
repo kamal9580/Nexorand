@@ -1,48 +1,47 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import { InputBox } from '../components/InputBox';
-import { Button } from '../components/Button';
-import axios from 'axios';
-import toast from 'react-hot-toast'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { InputBox } from "../components/InputBox";
+import { Button } from "../components/Button";
+import axios from "axios";
+import toast from "react-hot-toast";
+import backendurl from "../Host";
 
 const Login = () => {
-
-  
   const [email, setemail] = useState("");
-  const [password,setpassword]= useState("");
-  
-  
+  const [password, setpassword] = useState("");
+
   const navigate = useNavigate();
-  
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-violet-500 to-blue-500">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-        <form onSubmit={async () => {
-          
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
             try {
-              const response = await axios.post("https://nexorand.onrender.com/api/users/login", {
+              const response = await axios.post(
+                `${backendurl}/api/users/login`,
+
+                {
+                  username : email,
+                  password,
+                },
+                { withCredentials: true }
+              );
+              //  if(response.data.msg =='false'){
+              //     return false ;
+              //  }
+              console.log(response);
               
-                email,
-                password,
-               
-             
-             });
-            //  if(response.data.msg =='false'){
-            //     return false ;
-            //  }
-            
-             localStorage.setItem("token", response.data.token)
-             navigate("/my-space")
+              localStorage.setItem("token", response.data.data?.token);
+              navigate("/my-space");
             } catch (error) {
-
-
+              console.log(error);
               
             }
-           
           }}
-          >
+        >
           <div className="mb-4">
             {/* <label htmlFor="email" className="block text-gray-700">
               Email
@@ -55,9 +54,14 @@ const Login = () => {
               required
             /> */}
 
-      <InputBox props={{required : true, type : 'email'}}  onChange={(e) => {
-          setemail(e.target.value);
-        }} placeholder="nilesh@gmail.com" label={"Email"} />
+            <InputBox
+              props={{ required: true }}
+              onChange={(e) => {
+                setemail(e.target.value);
+              }}
+              placeholder="John Doe"
+              label={"Username"}
+            />
           </div>
 
           <div className="mb-6">
@@ -66,10 +70,14 @@ const Login = () => {
               <span className="text-red-500 ml-1">*</span>
             </label> */}
 
-            <InputBox props={{required : true, type : 'password'}} onChange={(e) => {
-          setpassword(e.target.value);
-        }} placeholder="1234" label={"Password"}  />
-
+            <InputBox
+              props={{ required: true, type: "password" }}
+              onChange={(e) => {
+                setpassword(e.target.value);
+              }}
+              placeholder="1234"
+              label={"Password"}
+            />
           </div>
 
           {/* <button
@@ -79,12 +87,10 @@ const Login = () => {
             Sign In
           </button> */}
 
-         <div className="pt-4">
-          <Button 
-           label={"Sign In"} />
-        </div>
+          <div className="pt-4">
+            <Button label={"Sign In"} />
+          </div>
 
-          
           <p className="text-center mt-4">
             Don't have an account?{" "}
             <Link to="/register" className="text-blue-500 hover:underline">
@@ -94,7 +100,7 @@ const Login = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

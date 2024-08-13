@@ -5,8 +5,8 @@ import Hero from "./pages/Hero";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { Register } from "./pages/Register";
-import  { Toaster } from 'react-hot-toast';
-
+import { Toaster } from "react-hot-toast";
+import Analytics from "./pages/Analytics";
 
 function App() {
   return (
@@ -25,11 +25,9 @@ function App() {
           path="/register"
           element={
             <>
-            <Layout />
-            <Register />
-           
+              <Layout />
+              <Register />
             </>
-           
           }
         />
         <Route
@@ -45,15 +43,23 @@ function App() {
         <Route
           path="/my-space"
           element={
-           
-
             <>
-            <Layout />
-            <Hero />
-            
+              <Layout />
+              <Hero />
             </>
           }
         />
+
+        <Route
+          path="/analytics"
+          element={
+            <>
+              <Layout />
+              <Analytics />
+            </>
+          }
+        />
+       
       </Routes>
       <Toaster />
     </Router>

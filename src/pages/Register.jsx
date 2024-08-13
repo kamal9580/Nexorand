@@ -33,7 +33,8 @@ export const Register = () => {
                   {
                     username,
                     email,
-                    instagramid,
+                    instagramId : instagramid,
+                    password
                   },
                   { withCredentials: true }
                 );

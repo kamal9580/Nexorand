@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios"; // Import Axios
 import { FaTrash, FaEdit, FaEye, FaEyeSlash, FaCamera } from "react-icons/fa";
 import { FaInstagram, FaTwitter, FaFacebookF } from "react-icons/fa";
 import { IoLogoYoutube } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
 import { CiStar } from "react-icons/ci";
 
-
 const instaUrl = "https://www.instagram.com/";
 const twitterUrl = "https://www.twitter.com/";
 const linkedinurl = "https://www.linkedin.com";
-const youtubeurl =  "https://www.youtube.com/";
+const youtubeurl = "https://www.youtube.com/";
 
 const ProfileCard = () => {
   const [links, setLinks] = useState([]);
-
   const [newLinkName, setNewLinkName] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(
     "https://via.placeholder.com/100"
   );
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePhotoChange = (event) => {
-    const file = event.target.files[0];//Extracts the first file selected by the user from the file input event.
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -34,33 +32,17 @@ const ProfileCard = () => {
     }
   };
 
-  // This line actually triggers the file reading process. readAsDataURL(file) tells the FileReader to read the contents of the file as a data URL.
-// Once the file is read, the onloadend event will fire, and the data URL will be passed to setProfilePhoto, updating the profile photo state in your component.
-
-  // useEffect(() => {
-  //   console.log(
-  //     links.filter((item) => {
-  //       if (regex.test(item)) {
-  //         return true;
-  //       }
-  //       return false;
-  //     })
-  //   );
-  // }, [links]);
+  
 
   const toggleLink = (index) => {
     setLinks(
       links.map((link, i) =>
         i === index ? { ...link, enabled: !link.enabled } : link
-      )  
+      )
     );
   };
 
-  /* If i === index, it creates a new object { ...link, enabled: !link.enabled }:
-{ ...link } spreads the properties of the current link object into a new object.
-enabled: !link.enabled toggles the enabled property of the link (true becomes false and vice versa). */
-
-  const addOrUpdateLink = () => {
+  const addOrUpdateLink = async () => {
     if (newLinkName.trim() && newLinkUrl.trim()) {
       if (editingIndex !== null) {
         // Update existing link
@@ -71,12 +53,27 @@ enabled: !link.enabled toggles the enabled property of the link (true becomes fa
         );
         setLinks(updatedLinks);
         setEditingIndex(null);
+
+        // Make an API request to update the link in the database
+        try {
+          await axios.put(`your-api-endpoint/${links[editingIndex].id}`, {
+            name: newLinkName,
+            url: newLinkUrl,
+            enabled: links[editingIndex].enabled,
+          });
+        } catch (error) {
+          console.error("Error updating link:", error);
+        }
       } else {
         // Add new link
-        setLinks([
-          ...links,
-          { name: newLinkName, url: newLinkUrl, enabled: false },
-        ]);
+        const newLink = { name: newLinkName, url: newLinkUrl, enabled: false };
+        try {
+          const response = await axios.post(`${backendurl}/api/users/register/id?`, 
+            newLink);
+          setLinks([...links, response.data]);
+        } catch (error) {
+          console.error("Error adding link:", error);
+        }
       }
       setNewLinkName("");
       setNewLinkUrl("");
@@ -89,32 +86,31 @@ enabled: !link.enabled toggles the enabled property of the link (true becomes fa
     setNewLinkUrl(links[index].url);
   };
 
-  const deleteLink = (index) => {
-    setLinks(links.filter((_, i) => i !== index));
+  const deleteLink = async (index) => {
+    try {
+      // Make an API request to delete the link from the database
+      await axios.delete(`your-api-endpoint/${links[index].id}`);
+      setLinks(links.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error("Error deleting link:", error);
+    }
   };
-
-  /* filter is a JavaScript array method that creates a new array containing only the elements that pass a given test.
-In this case, the test is defined by the arrow function (_, i) => i !== index.
-(_, i) represents the parameters passed to the filter function: the first parameter (_) represents the current element (the link object), and the second parameter (i) represents the index of that element in the array.
-The _ is used as a placeholder because the link object itself isn't needed for this operation—only the index i is important. */
 
   const matchUrl = (s, socialMethod) => {
     let i = 0,
       j = 0;
     let socialMediaUrl = "";
-    if (socialMethod == "insta") {
+    if (socialMethod === "insta") {
       socialMediaUrl = instaUrl;
-    }else if(socialMethod === "twitter"){
+    } else if (socialMethod === "twitter") {
       socialMediaUrl = twitterUrl;
-    }
-    else if(socialMethod === "linkedin"){
+    } else if (socialMethod === "linkedin") {
       socialMediaUrl = linkedinurl;
-    }
-    else if(socialMethod === "youtube"){
+    } else if (socialMethod === "youtube") {
       socialMediaUrl = youtubeurl;
     }
     while (i < s.length && j < socialMediaUrl.length) {
-      if (s[i] != socialMediaUrl[j]) return false;
+      if (s[i] !== socialMediaUrl[j]) return false;
       i++;
       j++;
     }
@@ -150,53 +146,26 @@ The _ is used as a placeholder because the link object itself isn't needed for t
         </div>
         {links && links.length ? (
           <div className="flex space-x-3 text-gray-500 mt-4">
-            {links.filter((item) => {
-              return matchUrl(item.url, "insta");
-            }).length ? (
+            {links.filter((item) => matchUrl(item.url, "insta")).length ? (
               <FaInstagram />
             ) : (
               <></>
             )}
-            {links.filter((item) => {
-              return matchUrl(item.url, "twitter");
-            }).length ? (
+            {links.filter((item) => matchUrl(item.url, "twitter")).length ? (
               <FaTwitter />
             ) : (
               <></>
             )}
-
-          {links.filter((item) => {
-              return matchUrl(item.url, "linkedin");
-            }).length ? (
+            {links.filter((item) => matchUrl(item.url, "linkedin")).length ? (
               <FaLinkedin />
             ) : (
               <></>
             )}
-
-           {links.filter((item) => {
-              return matchUrl(item.url, "youtube");
-            }).length ? (
+            {links.filter((item) => matchUrl(item.url, "youtube")).length ? (
               <IoLogoYoutube />
             ) : (
               <></>
             )}
-            {/* {links.filter((item) => {
-              if (item.toString().match("https://www.twitter.com/")) {
-                return true;
-              }
-              return false;
-            }) ? (
-              <FaTwitter />
-            ) : (
-              <></>
-            )} */}
-            {/* {
-               ?
-              <FaInstagram /> : <></>
-            } */}
-            {/* <FaTwitter />
-            <IoLogoYoutube />
-            <FaFacebookF /> */}
           </div>
         ) : (
           <></>
@@ -242,7 +211,6 @@ The _ is used as a placeholder because the link object itself isn't needed for t
                 {link.url || "URL not provided"}
               </p>
             </div>
-            <div>
             <div className="flex space-x-2">
               <button
                 className="text-gray-500 hover:text-purple-600"
@@ -270,20 +238,18 @@ The _ is used as a placeholder because the link object itself isn't needed for t
                 )}
               </label>
               <button>
-                <CiStar/>
+                <CiStar />
               </button>
-            </div>
             </div>
           </li>
         ))}
       </ul>
 
-      {/* Modal for Viewing Profile Photo */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg relative">
             <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              className="absolute top-2 right-2 text-gray-600 hover :text-gray-900"
               onClick={closeModal}
             >
               &times;
@@ -301,3 +267,4 @@ The _ is used as a placeholder because the link object itself isn't needed for t
 };
 
 export default ProfileCard;
+

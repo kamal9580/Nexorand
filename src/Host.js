@@ -1,2 +1,2 @@
-const backendurl = "https://nexorand.onrender.com";
+const backendurl = " http://localhost:3001";
 export default backendurl;
