@@ -41,7 +41,7 @@ export const Register = () => {
                 console.log(response, 44);
 
                 localStorage.setItem("token", response.data.token);
-                navigate("/my-space");
+                navigate("/Login");
               } catch (error) {
                 console.log(error);
 

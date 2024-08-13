@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { InputBox } from "../components/InputBox";
 import { Button } from "../components/Button";
 import axios from "axios";
 import toast from "react-hot-toast";
 import backendurl from "../Host";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
 
   const navigate = useNavigate();
+  const {user, setUser} = useContext(UserContext);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-violet-500 to-blue-500">
@@ -33,7 +35,7 @@ const Login = () => {
               //     return false ;
               //  }
               console.log(response);
-              
+              setUser(response.data.data);
               localStorage.setItem("token", response.data.data?.token);
               navigate("/my-space");
             } catch (error) {
