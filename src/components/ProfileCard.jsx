@@ -5,6 +5,7 @@ import { FaInstagram, FaTwitter, FaFacebookF } from "react-icons/fa";
 import { IoLogoYoutube } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
 import { CiStar } from "react-icons/ci";
+import { FaFileImage } from "react-icons/fa";
 import backendurl from "../Host";
 import { UserContext } from "../context/UserContext";
 const instaUrl = "https://www.instagram.com/";
@@ -18,6 +19,15 @@ const ProfileCard = () => {
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  //highlight
+
+  // const LinksComponent = ({ links }) => {
+  //   const [highlightedLink, setHighlightedLink] = useState(null);
+  
+  //   const handleClick = (link) => {
+  //     setHighlightedLink(link);
+  //   };
 
   const [profilePhoto, setProfilePhoto] = useState(
     "https://via.placeholder.com/100"
@@ -304,8 +314,16 @@ const ProfileCard = () => {
                     <FaEyeSlash className="ml-2 text-gray-500" />
                   )}
                 </label>
+                {/* <button 
+                className="text-gray-900 hover:text-purple-600"
+                onClick={() => handleClick(link.url)}
+              >
+                <CiStar />
+              </button> */}
+
+
                 <button>
-                  <CiStar />
+                <FaFileImage />
                 </button>
               </div>
             </li>
